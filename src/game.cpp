@@ -1,4 +1,9 @@
 #include "game.h"
+#include <SDL2/SDL_render.h>
+
+SDL_Texture* playerTex;    // Pointer
+SDL_Rect srcR, destR;      // Source rect and destination rect
+
 
 Game::Game(){}
 Game::~Game(){}
@@ -29,6 +34,11 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     else {
         isRunning = false;
     }
+
+    SDL_Surface* tmpSurface = IMG_Load("assets/bam.png");              // Texture initialized. first create surface
+    playerTex = SDL_CreateTextureFromSurface(renderer, tmpSurface);    // Make surface a texture
+    SDL_FreeSurface(tmpSurface);                                       // Free surface
+
 }
 
 void Game::handleEvents(){
@@ -47,11 +57,17 @@ void Game::handleEvents(){
 void Game::update() {
     countr++;
     std::cout << countr << std::endl;
+
+    destR.h = 64;
+    destR.w = 64;
+    destR.x = countr;
+
 }
 
 void Game::render(){    // This is where we add objects to render
 
     SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, playerTex, NULL, &destR);  // Renderer, texture, source rect, destination rect
     SDL_RenderPresent(renderer);
 }
 
